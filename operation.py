@@ -12,21 +12,21 @@ def get_data(params):
 
 
 async def add_number(message, listener, client):
-    if listener == adminID:
-        letters_array = message.split(' ')
-        if letters_array[0].lower() == '/добавить':
+    letters_array = message.split(' ')
+    if letters_array[0].lower() == '/добавить':
+        if listener == adminID:
             if letters_array[1].lower()[0] == '+7':
                 letters_array[1].lower()[0].replace('+7', '8')
             allowedNumbers.append(letters_array[1].lower())
             await client.send_message(listener, 'Вы добавили номер.')
-    else:
-        await client.send_message(listener, 'У вас недостаточно прав.')
+        else:
+            await client.send_message(listener, 'У Вас недостаточно прав.')
 
 
 async def remove_number(message, listener, client):
-    if listener == adminID:
-        letters_array = message.split(' ')
-        if letters_array[0].lower() == '/удалить':
+    letters_array = message.split(' ')
+    if letters_array[0].lower() == '/удалить':
+        if listener == adminID:
             if letters_array[1].lower()[0] == '+7':
                 letters_array[1].lower()[0].replace('+7', '8')
             if letters_array[1] in allowedNumbers:
@@ -34,8 +34,8 @@ async def remove_number(message, listener, client):
                 await client.send_message(listener, 'Вы удалили номер.')
             else:
                 await client.send_message(listener, 'Такой номер не был в списке добавленных!')
-    else:
-        await client.send_message(listener, 'У вас недостаточно прав.')
+        else:
+            await client.send_message(listener, 'У Вас недостаточно прав.')
 
 
 async def search_data(message, listener, client):
