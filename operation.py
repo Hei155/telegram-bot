@@ -56,7 +56,7 @@ async def search_data(message, listener, client):
             key_array = message.split(' ')
             key_array.remove('/найди')
             key = ' '.join(key_array)
-            if get_data(get_term(key)):
+            if get_data(key):
                 href = get_data(key)
                 await client.send_message(listener, f'По поводу «{key}» можно почитать: {href}')
             else:
