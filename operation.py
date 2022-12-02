@@ -1,14 +1,16 @@
 import requests
 import bs4
 from config import adminID
+from urllib.parse import urljoin, urlparse
 from utils.utils import *
 
 def get_data(params):
     data = requests.get(f'https://www.google.com/search?q=site%3Ahttps%3A%2F%2Fwww.npi-tu.ru%2F+{params}')
     soup = bs4.BeautifulSoup(data.text, "html.parser")
     if soup.find('h3'):
-        result = soup.find('h3').parent.parent.parent['href']
-        return result[7:]
+        result = soup.find('h3').parent.parent.parent['href'][7:]
+        url = result[7:]
+        return url[:url.find('&')]
     else:
         return False
 
