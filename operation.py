@@ -1,8 +1,8 @@
 import requests
 import bs4
 from config import adminID
-from urllib.parse import urljoin, urlparse
-from utils.utils import *
+from rutermextract import TermExtractor
+term_extractor = TermExtractor()
 
 def get_data(params):
     data = requests.get(f'https://www.google.com/search?q=site%3Ahttps%3A%2F%2Fwww.npi-tu.ru%2F+{params}')
@@ -51,15 +51,12 @@ async def remove_number(message, listener, client):
 
 
 async def search_data(message, listener, client):
-    if message.split(' ')[0].lower() == '/найди':
-        if len(message.split(' ')) < 2:
-            await client.send_message(listener, 'Ваш запрос пустой.')
-        else:
-            key_array = message.split(' ')
-            key_array.remove('/найди')
-            key = ' '.join(key_array)
-            if get_data(key):
-                href = get_data(key)
-                await client.send_message(listener, f'По поводу «{key}» можно почитать: {href}')
-            else:
-                await client.send_message(listener, 'Информации по данному запросу нет.')
+    key_list = []
+    for term in term_extractor(message):
+        key_list.append(term.normalized)
+    key = ' '.join(key_list)
+    if get_data(key):
+        href = get_data(key)
+        await client.send_message(listener, f'По поводу «{message}» можно почитать: {href}')
+    else:
+        await client.send_message(listener, 'Информации по данному запросу нет.')
