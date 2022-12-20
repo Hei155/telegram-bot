@@ -1,8 +1,12 @@
 import requests
 import bs4
 from config import adminID
+from utils.utils import get_term
 from rutermextract import TermExtractor
 term_extractor = TermExtractor()
+
+# Парсинг запроса
+
 
 def get_data(params):
     data = requests.get(f'https://www.google.com/search?q=site%3Ahttps%3A%2F%2Fwww.npi-tu.ru%2F+{params}')
@@ -13,6 +17,8 @@ def get_data(params):
         return url[:url.find('&')]
     else:
         return False
+
+# Добавление номера
 
 
 async def add_number(message, listener, client):
@@ -26,6 +32,9 @@ async def add_number(message, listener, client):
             await client.send_message(listener, 'Вы добавили номер.')
         else:
             await client.send_message(listener, 'У Вас недостаточно прав.')
+
+
+# Удаление номера
 
 
 async def remove_number(message, listener, client):
@@ -50,13 +59,12 @@ async def remove_number(message, listener, client):
             await client.send_message(listener, 'У Вас недостаточно прав.')
 
 
+# Поиск информации по запросу
+
 async def search_data(message, listener, client):
-    key_list = []
-    for term in term_extractor(message):
-        key_list.append(term.normalized)
-    key = ' '.join(key_list)
-    if get_data(key):
-        href = get_data(key)
-        await client.send_message(listener, f'По поводу «{message}» можно почитать: {href}')
+    key_words = get_term(message)
+    response = get_data(key_words)
+    if response:
+        await client.send_message(listener, f'По поводу «{message}» можно почитать: {response}')
     else:
         await client.send_message(listener, 'Информации по данному запросу нет.')
